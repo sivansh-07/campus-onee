@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head"><div><h2>Teacher Verification</h2><p>Admin approval workflow from the project report.</p></div></div>
+<div class="section-card">
+<table class="table align-middle">
+<thead><tr><th>Teacher</th><th>Department</th><th>Status</th><th>Action</th></tr></thead>
+<tbody>
+{% for t in teachers %}
+<tr><td>{{ t['name'] }}<br><small class="text-muted">{{ t['email'] }}</small></td><td>{{ t['department'] }}</td>
+<td>{% if t['verified'] %}<span class="badge text-bg-success">Verified</span>{% else %}<span class="badge text-bg-warning">Pending</span>{% endif %}</td>
+<td>{% if not t['verified'] %}<form method="post" class="d-flex gap-2">
+<input type="hidden" name="teacher_id" value="{{ t['id'] }}"><button class="btn btn-success btn-sm" name="action" value="approve">Approve</button><button class="btn btn-outline-danger btn-sm" name="action" value="reject">Reject</button>
+</form>{% else %}<span class="text-muted">No action needed</span>{% endif %}</td></tr>
+{% endfor %}
+</tbody></table>
+</div>
+{% endblock %}

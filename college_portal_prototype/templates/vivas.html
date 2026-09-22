@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head"><div><h2>Viva & Exam Scheduler</h2><p>Prototype schedule view for oral exams and viva slots.</p></div></div>
+<div class="section-card">
+<table class="table align-middle">
+<thead><tr><th>Course</th><th>{% if user['role']=='student' %}Teacher{% else %}Student{% endif %}</th><th>Scheduled At</th><th>Status</th></tr></thead>
+<tbody>
+{% for v in vivas %}
+<tr><td>{{ v['code'] }} — {{ v['title'] }}</td><td>{{ v['teacher'] if user['role']=='student' else v['student'] }}</td><td>{{ v['scheduled_at'] }}</td><td><span class="badge text-bg-info">{{ v['status'] }}</span></td></tr>
+{% else %}<tr><td colspan="4">No viva schedules yet.</td></tr>{% endfor %}
+</tbody></table>
+</div>
+{% endblock %}

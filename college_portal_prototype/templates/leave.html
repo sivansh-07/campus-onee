@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head"><div><h2>Leave Management</h2><p>Submit leave requests and track approval status.</p></div></div>
+<div class="row g-4">
+<div class="col-lg-5"><div class="section-card">
+<form method="post">
+<label class="form-label">From</label><input class="form-control mb-3" type="date" name="from_date" required>
+<label class="form-label">To</label><input class="form-control mb-3" type="date" name="to_date" required>
+<label class="form-label">Reason</label><textarea class="form-control mb-3" name="reason" rows="4" required></textarea>
+<button class="btn btn-primary">Submit Leave</button>
+</form></div></div>
+<div class="col-lg-7"><div class="section-card">
+<h5>My Requests</h5><table class="table"><thead><tr><th>Dates</th><th>Reason</th><th>Status</th></tr></thead>
+<tbody>{% for l in leaves %}<tr><td>{{ l['from_date'] }} → {{ l['to_date'] }}</td><td>{{ l['reason'] }}</td><td><span class="badge text-bg-warning">{{ l['status'] }}</span></td></tr>{% else %}<tr><td colspan="3">No leave requests.</td></tr>{% endfor %}</tbody></table>
+</div></div>
+</div>
+{% endblock %}

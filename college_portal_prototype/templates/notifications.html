@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head"><div><h2>Notifications</h2><p>Deadlines, submissions and portal alerts.</p></div></div>
+{% for n in notifications %}
+<div class="section-card mb-2"><b>{{ n['message'] }}</b><div class="text-muted small mt-1">{{ n['created_at'] }}</div></div>
+{% else %}
+<div class="section-card">No notifications yet.</div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,891 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if current_user['role'] == 'student' %}
+
+<!-- ================= HERO ================= -->
+
+<section class="welcome-section">
+
+    <div>
+
+        <span class="section-label">
+            COLLEGE CAMPUS PORTAL
+        </span>
+
+        <h1>
+            Hello, {{ current_user['name'].split()[0] }}!
+            <span>👋</span>
+        </h1>
+
+        <p>
+            Here's what's happening at BBDNIIT today.
+        </p>
+
+    </div>
+
+
+    <div class="today-box">
+
+        <div class="quote-icon">
+            “
+        </div>
+
+        <div>
+
+            <strong>
+                Discipline today
+            </strong>
+
+            <span>
+                leads to success tomorrow.
+            </span>
+
+        </div>
+
+        <div class="date">
+
+            <strong>
+                {{ now.strftime('%A') if now else 'Today' }}
+            </strong>
+
+            <span>
+                {{ now.strftime('%d %b %Y') if now else '' }}
+            </span>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= STAT CARDS ================= -->
+
+<section class="stats-container">
+
+
+    <a href="{{ url_for('courses') }}"
+       class="stat-card blue-card">
+
+        <div class="stat-icon">
+            <i class="bi bi-book-fill"></i>
+        </div>
+
+        <div class="stat-content">
+
+            <span>
+                Total Courses
+            </span>
+
+            <strong>
+                {{ stats.courses }}
+            </strong>
+
+            <small>
+                This Semester
+            </small>
+
+        </div>
+
+        <i class="bi bi-arrow-right stat-arrow"></i>
+
+    </a>
+
+
+
+    <a href="{{ url_for('attendance') }}"
+       class="stat-card green-card">
+
+        <div class="stat-icon">
+            <i class="bi bi-bar-chart-fill"></i>
+        </div>
+
+        <div class="stat-content">
+
+            <span>
+                Attendance
+            </span>
+
+            <strong>
+                {{ stats.attendance }}%
+            </strong>
+
+            <small>
+                Overall
+            </small>
+
+        </div>
+
+        <i class="bi bi-arrow-right stat-arrow"></i>
+
+    </a>
+
+
+
+    <a href="{{ url_for('assignments') }}"
+       class="stat-card orange-card">
+
+        <div class="stat-icon">
+            <i class="bi bi-file-earmark-text-fill"></i>
+        </div>
+
+        <div class="stat-content">
+
+            <span>
+                Pending Assignments
+            </span>
+
+            <strong>
+                {{ stats.pending_assignments }}
+            </strong>
+
+            <small>
+                Due Soon
+            </small>
+
+        </div>
+
+        <i class="bi bi-arrow-right stat-arrow"></i>
+
+    </a>
+
+
+
+    <a href="{{ url_for('notifications') }}"
+       class="stat-card purple-card">
+
+        <div class="stat-icon">
+            <i class="bi bi-bell-fill"></i>
+        </div>
+
+        <div class="stat-content">
+
+            <span>
+                Notifications
+            </span>
+
+            <strong>
+                {{ stats.notifications }}
+            </strong>
+
+            <small>
+                New Updates
+            </small>
+
+        </div>
+
+        <i class="bi bi-arrow-right stat-arrow"></i>
+
+    </a>
+
+</section>
+
+
+
+<!-- ================= MAIN GRID ================= -->
+
+<section class="dashboard-grid">
+
+
+    <!-- ATTENDANCE -->
+
+    <div class="dashboard-card attendance-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Attendance Overview
+                </h2>
+
+                <p>
+                    Your attendance performance at a glance.
+                </p>
+
+            </div>
+
+            <span class="semester-badge">
+                This Semester
+                <i class="bi bi-chevron-down"></i>
+            </span>
+
+        </div>
+
+
+        <div class="attendance-body">
+
+            <div class="attendance-circle"
+                 style="--attendance: {{ stats.attendance }}%;">
+
+                <div>
+
+                    <strong>
+                        {{ stats.attendance }}%
+                    </strong>
+
+                    <span>
+                        Present
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="attendance-details">
+
+                <div class="attendance-row">
+
+                    <span class="green-dot"></span>
+
+                    <span>
+                        Present
+                    </span>
+
+                    <strong>
+                        {{ stats.attendance }}%
+                    </strong>
+
+                </div>
+
+
+                <div class="attendance-row">
+
+                    <span class="blue-dot"></span>
+
+                    <span>
+                        Absent
+                    </span>
+
+                    <strong>
+                        {{ stats.absent }}%
+                    </strong>
+
+                </div>
+
+
+                <div class="attendance-row">
+
+                    <span class="grey-dot"></span>
+
+                    <span>
+                        Leaves
+                    </span>
+
+                    <strong>
+                        {{ stats.leave_percent }}%
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="attendance-message">
+
+            <i class="bi bi-check-circle-fill"></i>
+
+            {% if stats.attendance >= 75 %}
+
+                Great! Keep maintaining your attendance.
+
+            {% else %}
+
+                Attendance is below 75%. Try to attend upcoming classes.
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+
+    <!-- COURSES -->
+
+    <div class="dashboard-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Current Courses
+                </h2>
+
+                <p>
+                    Your enrolled subjects.
+                </p>
+
+            </div>
+
+            <a href="{{ url_for('courses') }}"
+               class="view-link">
+
+                View All
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="course-list">
+
+            {% for course in dashboard_courses %}
+
+            <a href="{{ url_for('courses') }}"
+               class="course-item">
+
+                <div class="course-code">
+                    {{ course['code'][:4] }}
+                </div>
+
+                <div class="course-info">
+
+                    <strong>
+                        {{ course['title'] }}
+                    </strong>
+
+                    <small>
+                        {{ course['code'] }}
+                        · Semester {{ course['semester'] }}
+                    </small>
+
+                </div>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </a>
+
+            {% else %}
+
+            <div class="empty">
+                No courses found.
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+
+    <!-- DEADLINES -->
+
+    <div class="dashboard-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Upcoming Deadlines
+                </h2>
+
+                <p>
+                    Don't miss your submissions.
+                </p>
+
+            </div>
+
+            <a href="{{ url_for('assignments') }}"
+               class="view-link">
+
+                View All
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="deadline-list">
+
+            {% for item in dashboard_assignments %}
+
+            <a href="{{ url_for('assignments') }}"
+               class="deadline-item">
+
+                <div class="deadline-date">
+
+                    <strong>
+                        {{ item['due_date'][8:10] }}
+                    </strong>
+
+                    <span>
+                        {{ item['due_date'][5:7] }}
+                    </span>
+
+                </div>
+
+
+                <div class="deadline-info">
+
+                    <strong>
+                        {{ item['title'] }}
+                    </strong>
+
+                    <small>
+                        {{ item['code'] }}
+                    </small>
+
+                </div>
+
+
+                <span class="due-badge">
+                    Due Soon
+                </span>
+
+            </a>
+
+            {% else %}
+
+            <div class="empty">
+                No upcoming deadlines.
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+
+    <!-- QUICK ACTIONS -->
+
+    <div class="dashboard-card quick-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Quick Actions
+                </h2>
+
+                <p>
+                    Access your frequently used features.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="quick-actions">
+
+
+            <a href="{{ url_for('leave') }}"
+               class="quick-action green-action">
+
+                <div>
+                    <i class="bi bi-calendar-plus-fill"></i>
+                </div>
+
+                <span>
+                    Apply<br>Leave
+                </span>
+
+            </a>
+
+
+            <a href="{{ url_for('courses') }}"
+               class="quick-action blue-action">
+
+                <div>
+                    <i class="bi bi-clock-fill"></i>
+                </div>
+
+                <span>
+                    View<br>Timetable
+                </span>
+
+            </a>
+
+
+            <a href="{{ url_for('assignments') }}"
+               class="quick-action orange-action">
+
+                <div>
+                    <i class="bi bi-file-earmark-plus-fill"></i>
+                </div>
+
+                <span>
+                    Submit<br>Assignment
+                </span>
+
+            </a>
+
+
+            <a href="{{ url_for('attendance') }}"
+               class="quick-action purple-action">
+
+                <div>
+                    <i class="bi bi-bar-chart-fill"></i>
+                </div>
+
+                <span>
+                    Check<br>Attendance
+                </span>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- NOTIFICATIONS -->
+
+    <div class="dashboard-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Recent Notifications
+                </h2>
+
+                <p>
+                    Latest campus updates.
+                </p>
+
+            </div>
+
+            <a href="{{ url_for('notifications') }}"
+               class="view-link">
+
+                View All
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="notification-list">
+
+            {% for note in dashboard_notifications %}
+
+            <a href="{{ url_for('notifications') }}"
+               class="notification-item">
+
+                <span class="notification-marker"></span>
+
+                <div>
+
+                    <strong>
+                        {{ note['message'] }}
+                    </strong>
+
+                    <small>
+                        {{ note['created_at'] }}
+                    </small>
+
+                </div>
+
+            </a>
+
+            {% else %}
+
+            <div class="empty">
+                No recent notifications.
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+
+    <!-- CAMPUS PROMO -->
+
+    <div class="campus-promo">
+
+        <div class="promo-content">
+
+            <span>
+                Learn
+            </span>
+
+            <span>
+                Build
+            </span>
+
+            <strong>
+                Grow
+            </strong>
+
+            <p>
+                At BBDNIIT, opportunities never end.
+            </p>
+
+            <i class="bi bi-arrow-right"></i>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+{% elif current_user['role'] == 'teacher' %}
+
+
+<!-- ================= TEACHER ================= -->
+
+<section class="welcome-section">
+
+    <div>
+
+        <span class="section-label">
+            CAMPUSONE FACULTY PORTAL
+        </span>
+
+        <h1>
+            Welcome back,
+            {{ current_user['name'].split()[0] }}! 👋
+        </h1>
+
+        <p>
+            Manage your academic workspace from one place.
+        </p>
+
+    </div>
+
+</section>
+
+
+<section class="stats-container three">
+
+    <div class="stat-card blue-card">
+
+        <div class="stat-icon">
+            <i class="bi bi-book-fill"></i>
+        </div>
+
+        <div class="stat-content">
+
+            <span>
+                Department Courses
+            </span>
+
+            <strong>
+                {{ stats.courses }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="stat-card orange-card">
+
+        <div class="stat-icon">
+            <i class="bi bi-file-earmark-text-fill"></i>
+        </div>
+
+        <div class="stat-content">
+
+            <span>
+                Assignments Created
+            </span>
+
+            <strong>
+                {{ stats.assignments }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="stat-card purple-card">
+
+        <div class="stat-icon">
+            <i class="bi bi-inbox-fill"></i>
+        </div>
+
+        <div class="stat-content">
+
+            <span>
+                Pending Submissions
+            </span>
+
+            <strong>
+                {{ stats.pending_submissions }}
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<div class="dashboard-card">
+
+    <h2>
+        Teacher Workspace
+    </h2>
+
+    <p>
+        Manage assignments, submissions, attendance and viva scheduling.
+    </p>
+
+    <a href="{{ url_for('assignments') }}"
+       class="primary-button">
+
+        Open Assignments
+        <i class="bi bi-arrow-right"></i>
+
+    </a>
+
+</div>
+
+
+
+{% elif current_user['role'] == 'admin' %}
+
+
+<!-- ================= ADMIN ================= -->
+
+<section class="welcome-section">
+
+    <div>
+
+        <span class="section-label">
+            CAMPUSONE ADMINISTRATION
+        </span>
+
+        <h1>
+            Admin Dashboard 👋
+        </h1>
+
+        <p>
+            Monitor users, courses and verification requests.
+        </p>
+
+    </div>
+
+</section>
+
+
+<section class="stats-container">
+
+    <div class="stat-card blue-card">
+
+        <div class="stat-icon">
+            <i class="bi bi-people-fill"></i>
+        </div>
+
+        <div class="stat-content">
+
+            <span>Students</span>
+
+            <strong>
+                {{ stats.students }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="stat-card green-card">
+
+        <div class="stat-icon">
+            <i class="bi bi-person-badge-fill"></i>
+        </div>
+
+        <div class="stat-content">
+
+            <span>Teachers</span>
+
+            <strong>
+                {{ stats.teachers }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="stat-card orange-card">
+
+        <div class="stat-icon">
+            <i class="bi bi-shield-exclamation"></i>
+        </div>
+
+        <div class="stat-content">
+
+            <span>Pending Verification</span>
+
+            <strong>
+                {{ stats.pending_teachers }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="stat-card purple-card">
+
+        <div class="stat-icon">
+            <i class="bi bi-collection-fill"></i>
+        </div>
+
+        <div class="stat-content">
+
+            <span>Courses</span>
+
+            <strong>
+                {{ stats.courses }}
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<div class="dashboard-card">
+
+    <h2>
+        Administration
+    </h2>
+
+    <p>
+        Review teacher verification requests and oversee portal data.
+    </p>
+
+    <a href="{{ url_for('admin_teachers') }}"
+       class="primary-button">
+
+        Verify Teachers
+        <i class="bi bi-arrow-right"></i>
+
+    </a>
+
+</div>
+
+
+{% endif %}
+
+{% endblock %}
